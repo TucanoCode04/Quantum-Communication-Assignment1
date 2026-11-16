@@ -1,0 +1,109 @@
+% =====================================================================
+%  Quantum part - Exercise 2 : dual-click MIM versus MM
+% =====================================================================
+
+\subsection{Exercise 2 -- Dual-click MIM versus MM}
+\label{sec:q2}
+
+\paragraph{Notation and common quantities.}
+The one-way propagation time over the whole link is
+\begin{equation}
+  t_\mathrm{link} = \frac{nL}{c} = \frac{1.5\times\SI{100e3}{\metre}}{\SI{3e8}{\metre\per\second}} = \SI{500}{\micro\second}.
+\end{equation}
+Following the round-based controller of the lectures, a round reserves a train of complete clock slots
+(launch $i$ starts at $(i-1)\,t_\mathrm{clock}$), waits for the last classical outcome, and only then
+uses the confirmed pairs and resets the memories. The feedback delays are
+\begin{itemize}
+  \item MIM: the photon travels $L/2$ to the midpoint BSA and the result travels $L/2$ back, so the delay is $t_\mathrm{link}$;
+  \item MM: the sender photon travels $L$ to the BSA at the receiver and the result travels $L$ back to the sender, so the delay is $2t_\mathrm{link}$.
+\end{itemize}
+Each trial succeeds independently with probability $p = p_\mathrm{dual} = 0.005$.
+
+% ---------------------------------------------------------------------
+\paragraph{1. Round duration.}
+In MIM each trial reserves one memory at each endpoint, so $N$ memories per endpoint give $N$ trials per round.
+In MM each trial uses a fresh sender memory, so the number of trials equals the sender-bank size $N_\mathrm{sen}$.
+\begin{align}
+  \text{A (MIM, } N=2\text{):}\quad
+  t_\mathrm{round,A} &= t_\mathrm{link} + N\,t_\mathrm{clock} = 500 + 2\times1 = \SI{502}{\micro\second},\\
+  \text{B (MM, } N_\mathrm{sen}=2\text{):}\quad
+  t_\mathrm{round,B} &= 2t_\mathrm{link} + N_\mathrm{sen}\,t_\mathrm{clock} = 1000 + 2\times1 = \SI{1002}{\micro\second},\\
+  \text{C (MM, } N_\mathrm{sen}=3\text{):}\quad
+  t_\mathrm{round,C} &= 2t_\mathrm{link} + N_\mathrm{sen}\,t_\mathrm{clock} = 1000 + 3\times1 = \SI{1003}{\micro\second}.
+\end{align}
+The clock train is negligible compared with the propagation delays, so the MM rounds last about twice as long
+as the MIM round.
+
+% ---------------------------------------------------------------------
+\paragraph{2. Designs A and B.}
+In both designs every successful trial has its own pair of reserved memories, so no success is ever lost
+(no receiver-capacity clipping). The retained yield $Y$ is the number of successes in two independent trials:
+\begin{equation}
+  E[Y_\mathrm{A}] = E[Y_{2,2}] = 2p = 2\times0.005 = 0.01 \ \text{pairs per round},
+\end{equation}
+where $Y_{N_\mathrm{sen},N_\mathrm{rec}}$ denotes the retained yield of an MM design with $N_\mathrm{sen}$ sender
+and $N_\mathrm{rec}$ receiver memories (Design B is $2+2$, Design C is $3+1$).
+The average rate is the expected yield divided by the round duration:
+\begin{equation}
+  R_\mathrm{A} = \frac{2p}{t_\mathrm{link}+2t_\mathrm{clock}} = \frac{0.01}{\SI{502}{\micro\second}} = \SI{19.9}{\per\second},
+  \qquad
+  R_\mathrm{B} = \frac{2p}{2t_\mathrm{link}+2t_\mathrm{clock}} = \frac{0.01}{\SI{1002}{\micro\second}} = \SI{9.98}{\per\second}.
+\end{equation}
+
+% ---------------------------------------------------------------------
+\paragraph{3. Design C.}
+The three sender memories launch three trials in successive slots. The single receiver memory resets locally
+after each failure and can try again, but after the first success it is preserved and cannot load another pair
+in the same round. Counting the $k$ potential successes among the 3 trials (binomial distribution) and the
+pairs actually retained, $\min(k,1)$:
+\begin{center}
+\begin{tabular}{cccc}
+  \toprule
+  Successes $k$ & Probability $\binom{3}{k}p^k(1-p)^{3-k}$ & Retained (1 B slot) & Without clipping \\
+  \midrule
+  0 & $(1-p)^3 = 0.985075$     & 0 & 0 \\
+  1 & $3p(1-p)^2 = 0.014888$   & 1 & 1 \\
+  2 & $3p^2(1-p) = \num{7.46e-5}$ & 1 & 2 \\
+  3 & $p^3 = \num{1.25e-7}$    & 1 & 3 \\
+  \bottomrule
+\end{tabular}
+\end{center}
+With $X\sim\mathrm{Binomial}(N_\mathrm{sen},p)$ the number of potential successes and $N_\mathrm{rec}=1$,
+the retained yield is $\min(X,N_\mathrm{rec})$: at least one pair is retained unless all three trials fail,
+\begin{equation}
+  E[Y_{3,1}] = E[\min(X,1)] = 1-(1-p)^3 = 3p - 3p^2 + p^3 = 1 - 0.995^3 = 0.014925 \ \text{pairs per round},
+\end{equation}
+only slightly below the unclipped value $3p = 0.015$, because two or more successes in the same round are very
+unlikely at $p = 0.005$. The corresponding rate is
+\begin{equation}
+  R_\mathrm{C} = \frac{1-(1-p)^3}{2t_\mathrm{link}+3t_\mathrm{clock}} = \frac{0.014925}{\SI{1003}{\micro\second}} = \SI{14.9}{\per\second}.
+\end{equation}
+
+% ---------------------------------------------------------------------
+\paragraph{4. Comparison.}
+\begin{center}
+\begin{tabular}{lcccc}
+  \toprule
+  Design & Memories (sender + receiver) & $t_\mathrm{round}$ & $E[Y]$ per round & Rate \\
+  \midrule
+  A -- MIM            & 2 + 2 (per endpoint) & \SI{502}{\micro\second}  & 0.0100   & \textbf{\SI{19.9}{\per\second}} \\
+  B -- symmetric MM   & 2 + 2                & \SI{1002}{\micro\second} & 0.0100   & \SI{9.98}{\per\second} \\
+  C -- asymmetric MM  & 3 + 1                & \SI{1003}{\micro\second} & 0.014925 & \SI{14.9}{\per\second} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\emph{Why moving one memory to the sender improves MM.} In MM a sender memory stays reserved for the whole
+$2t_\mathrm{link}$ round trip, so the number of trials per round is set by the sender bank. The receiver,
+instead, learns the BSA outcome locally and promptly, so after a failure it can reset and reuse the same memory
+for the next incoming photon. With $p = 0.005$ a second receiver memory is almost always idle (it is needed only
+when two trials succeed in the same round, probability $\approx p^2$). Moving it to the sender buys one extra
+trial per round at the cost of only one extra clock slot (\SI{1}{\micro\second}), and the rate grows by
+\begin{equation}
+  \frac{R_\mathrm{C}}{R_\mathrm{B}} = \frac{1-(1-p)^3}{2p}\cdot\frac{2t_\mathrm{link}+2t_\mathrm{clock}}{2t_\mathrm{link}+3t_\mathrm{clock}}
+  = 1.4925\times0.999 = 1.49 \quad(+49\%).
+\end{equation}
+
+\emph{Preferred design.} Under the four-memory constraint, Design A (MIM) gives the highest rate,
+\SI{19.9}{\per\second}. With the BSA at the midpoint its feedback delay is $t_\mathrm{link}$ instead of
+$2t_\mathrm{link}$, so it completes about twice as many rounds per second as either MM design, and this
+advantage outweighs the extra trial of Design C. Among the MM designs, C is preferred over B.

@@ -1,0 +1,136 @@
+% =====================================================================
+%  Sections 2.3 - 2.6 : power conversions, power budget, fiber length
+% =====================================================================
+
+% ---------------------------------------------------------------------
+\subsection{Power conversions}
+\label{sec:2_3}
+% ---------------------------------------------------------------------
+Throughout, $P_\mathrm{dBm} = 10\log_{10}(P/\SI{1}{\milli\watt})$ is an absolute power,
+while gains and losses are ratios expressed in dB. In logarithmic scale a link budget is a sum,
+$P_\mathrm{rx,dBm} = P_\mathrm{tx,dBm} + \sum G_\mathrm{dB} - \sum A_\mathrm{dB}$;
+in linear scale it is a product of the corresponding factors.
+
+\paragraph{1. Splitter halving the power, $P_\mathrm{RX} = \SI{0.8}{\milli\watt}$.}
+\emph{Linear:} $P_\mathrm{TX} = 2\,P_\mathrm{RX} = 2\times\SI{0.8}{\milli\watt} = \SI{1.6}{\milli\watt}$.\\
+\emph{Logarithmic:} halving the power corresponds to $10\log_{10}2 = \SI{3.01}{dB}$ of loss:
+\begin{equation}
+  P_\mathrm{RX} = 10\log_{10}(0.8) = \SI{-0.97}{dBm}, \qquad
+  P_\mathrm{TX} = \SI{-0.97}{dBm} + \SI{3.01}{dB} = \SI{2.04}{dBm} = 10\log_{10}(1.6) .
+\end{equation}
+
+\paragraph{2. $P_\mathrm{TX} = \SI{2}{\milli\watt}$, fiber loss \SI{5}{dB}, amplifier, $P_\mathrm{RX} = \SI{2}{\milli\watt}$.}
+\emph{Logarithmic:} $P_\mathrm{TX} = P_\mathrm{RX} = 10\log_{10}2 = \SI{3.01}{dBm}$, hence
+\begin{equation}
+  P_\mathrm{rx,dBm} = P_\mathrm{tx,dBm} - \SI{5}{dB} + G_\mathrm{dB}
+  \;\Rightarrow\; G_\mathrm{dB} = \SI{5}{dB}.
+\end{equation}
+\emph{Linear:} after the fiber $P = \SI{2}{\milli\watt}\times10^{-0.5} = \SI{0.632}{\milli\watt}$, so
+$G = \SI{2}{\milli\watt}/\SI{0.632}{\milli\watt} = 10^{0.5} = 3.162$.
+The amplifier exactly compensates the fiber loss.
+
+\paragraph{3. $P_\mathrm{TX} = \SI{2}{\milli\watt}$, loss \SI{10}{dB}.}
+\emph{Logarithmic:} $P_\mathrm{RX} = \SI{3.01}{dBm} - \SI{10}{dB} = \SI{-6.99}{dBm}$.\\
+\emph{Linear:} a \SI{10}{dB} loss is a factor $10^{-1}$, so
+$P_\mathrm{RX} = \SI{2}{\milli\watt}\times 10^{-1} = \SI{0.2}{\milli\watt}$.
+
+\paragraph{4. Three identical amplifiers interleaved with three \SI{14}{dB} fiber spans.}
+$P_\mathrm{TX} = \SI{0}{dBm}$ and $P_\mathrm{RX} = \SI{1}{\milli\watt} = \SI{0}{dBm}$.\\
+\emph{Logarithmic:}
+\begin{equation}
+  \SI{0}{dBm} = \SI{0}{dBm} - 3\times\SI{14}{dB} + 3\,G_\mathrm{dB}
+  \;\Rightarrow\; G_\mathrm{dB} = \frac{42}{3} = \SI{14}{dB}.
+\end{equation}
+\emph{Linear:} each span has transmission $10^{-1.4} = 1/25.12$, so
+$P_\mathrm{RX} = P_\mathrm{TX}\,(G/25.12)^3 = P_\mathrm{TX}$, giving $G = 25.12$.
+Each amplifier recovers exactly the loss of one span; the order of the elements does not change the
+final power.
+
+
+% ---------------------------------------------------------------------
+\subsection{Power budget and noise evaluation}
+\label{sec:2_4}
+% ---------------------------------------------------------------------
+\paragraph{Data.} $P_\mathrm{in} = \SI{10}{\micro\watt}$, $G_1 = \SI{10}{dB}$, $A_1 = \SI{8}{dB}$,\\
+$P_\mathrm{end} = \SI{0.1}{\milli\watt}$, $\mathrm{SNR} = \SI{20}{dB}$, $N_0 = \SI{e-16}{\watt\per\hertz}$.
+
+\paragraph{Gain $G_2$.}
+The overall line gain is the ratio between output and input power:
+\begin{equation}
+  \frac{P_\mathrm{end}}{P_\mathrm{in}} = \frac{\SI{100}{\micro\watt}}{\SI{10}{\micro\watt}} = 10
+  \;\Rightarrow\; 10\log_{10}(10) = \SI{10}{dB}.
+\end{equation}
+Since gains and losses add in dB:
+\begin{equation}
+  G_1 - A_1 + G_2 = \SI{10}{dB}
+  \;\Rightarrow\; G_2 = 10 - 10 + 8 = \SI{8}{dB} \quad (\text{linear } 10^{0.8} = 6.31).
+\end{equation}
+Check in dBm: $P_\mathrm{in} = \SI{-20}{dBm}$, after $G_1$: \SI{-10}{dBm}, after the fiber: \SI{-18}{dBm},
+after $G_2$: \SI{-10}{dBm} $= \SI{0.1}{\milli\watt}$.
+
+\paragraph{Noise power.}
+$P_\mathrm{end} = 10\log_{10}(0.1) = \SI{-10}{dBm}$ and, in logarithmic units,
+$\mathrm{SNR}_\mathrm{dB} = P_\mathrm{end,dBm} - P_\mathrm{noise,dBm}$:
+\begin{equation}
+  P_\mathrm{noise} = \SI{-10}{dBm} - \SI{20}{dB} = \SI{-30}{dBm} = \SI{e-3}{\milli\watt} = \SI{1}{\micro\watt}
+  \qquad\left(\text{linear: } \frac{\SI{100}{\micro\watt}}{100} = \SI{1}{\micro\watt}\right).
+\end{equation}
+
+\paragraph{Bandwidth.}
+For white noise with power spectral density $N_0$, the noise power collected in a bandwidth $B$ is
+$P_\mathrm{noise} = N_0 B$:
+\begin{equation}
+  B = \frac{P_\mathrm{noise}}{N_0} = \frac{\SI{e-6}{\watt}}{\SI{e-16}{\watt\per\hertz}}
+  = \SI{e10}{\hertz} = \SI{10}{\giga\hertz}.
+\end{equation}
+
+
+% ---------------------------------------------------------------------
+\subsection{Fiber length computation}
+\label{sec:2_5}
+% ---------------------------------------------------------------------
+\paragraph{Data.} $P_\mathrm{RX} = \SI{2}{\micro\watt}$, $L = \SI{20}{\kilo\metre}$.
+Typical average fiber attenuations (from the course slides):
+$\alpha_O = \SI{0.4}{dB\per\kilo\metre}$ in the O-band ($\approx\SI{1310}{\nano\metre}$) and
+$\alpha_C = \SI{0.2}{dB\per\kilo\metre}$ in the C-band ($\approx\SI{1550}{\nano\metre}$).
+
+\paragraph{Received power in dBm.}
+\begin{equation}
+  P_\mathrm{RX} = 10\log_{10}\!\left(\SI{2e-3}{\milli\watt}\right) = \SI{-26.99}{dBm} \approx \SI{-27}{dBm}.
+\end{equation}
+
+\paragraph{Required input power.}
+The fiber loss is $A = \alpha L$, and $P_\mathrm{in,dBm} = P_\mathrm{rx,dBm} + \alpha L$:
+\begin{align}
+  \text{O-band:}\quad & P_\mathrm{in} = -27 + 20\times0.4 = \SI{-19}{dBm}
+  \;\Rightarrow\; P_\mathrm{in} = 10^{-1.9}\,\si{\milli\watt} = \SI{12.59}{\micro\watt},\\
+  \text{C-band:}\quad & P_\mathrm{in} = -27 + 20\times0.2 = \SI{-23}{dBm}
+  \;\Rightarrow\; P_\mathrm{in} = 10^{-2.3}\,\si{\milli\watt} = \SI{5.01}{\micro\watt}.
+\end{align}
+The O-band requires about $2.5$ times more launched power (\SI{4}{dB} more), because of its higher attenuation.
+
+
+% ---------------------------------------------------------------------
+\subsection{Power budget with the effect of fiber attenuation}
+\label{sec:2_6}
+% ---------------------------------------------------------------------
+\paragraph{Data.} $P_\mathrm{TX} = \SI{4}{\micro\watt}$, $P_\mathrm{RX} = \SI{1}{\micro\watt}$,
+$\alpha = \SI{0.2}{dB\per\kilo\metre}$, $\mathrm{SNR}_\mathrm{min} = \SI{13}{dB}$.
+
+\paragraph{Fiber length.}
+In dBm: $P_\mathrm{TX} = 10\log_{10}(\SI{4e-3}{}) = \SI{-24}{dBm}$ and
+$P_\mathrm{RX} = 10\log_{10}(\SI{e-3}{}) = \SI{-30}{dBm}$. From $P_\mathrm{RX} = P_\mathrm{TX} - \alpha L$:
+\begin{equation}
+  -30 = -24 - 0.2\,L
+  \;\Rightarrow\; L = \frac{\SI{6}{dB}}{\SI{0.2}{dB\per\kilo\metre}} = \SI{30}{\kilo\metre}.
+\end{equation}
+(Linear check: the power is reduced by a factor 4, i.e.\ $10\log_{10}4 = \SI{6.02}{dB}$, giving $L = \SI{30.1}{\kilo\metre}$.)
+
+\paragraph{Maximum allowed noise power.}
+$\mathrm{SNR} = P_\mathrm{RX}/P_\mathrm{noise}$, i.e.\ in dB
+$\mathrm{SNR}_\mathrm{dB} = P_\mathrm{rx,dBm} - P_\mathrm{noise,dBm}$:
+\begin{equation}
+  P_\mathrm{noise,max} = \SI{-30}{dBm} - \SI{13}{dB} = \SI{-43}{dBm}
+  = 10^{-4.3}\,\si{\milli\watt} = \SI{50}{\nano\watt}
+  \qquad\left(\text{linear: } \frac{\SI{1}{\micro\watt}}{10^{1.3}} = \frac{\SI{1}{\micro\watt}}{19.95}\right).
+\end{equation}

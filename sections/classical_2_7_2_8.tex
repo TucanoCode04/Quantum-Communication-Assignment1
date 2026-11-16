@@ -1,0 +1,217 @@
+% =====================================================================
+%  Section 2.7 - PIN photodetectors  &  Section 2.8 - Optical splitters
+%  To be \input{} inside the main report, under the Section 2 heading.
+%  Requires: amsmath, siunitx, booktabs
+% =====================================================================
+
+% ---------------------------------------------------------------------
+\subsection{PIN photodetectors}
+\label{sec:2_7}
+% ---------------------------------------------------------------------
+
+\paragraph{Data.}
+Quantum efficiency $\eta_\mathrm{ph} = 0.8$, optical frequency $f_c = \SI{193.5}{\tera\hertz}$,
+incident (received) power $P_\mathrm{RX} = P_\mathrm{inc} = \SI{-20}{dBm}$, bitrate $R_b = \SI{50}{\mega\bit\per\second}$,
+TIA noise standard deviation $\sigma_\mathrm{TIA} = \sigma_n = \SI{0.5}{\micro\ampere}$.
+
+\noindent Constants: $h = \SI{6.626e-34}{\joule\second}$, $q = \SI{1.602e-19}{\coulomb}$.
+
+\noindent First, convert the incident power to linear units:
+\begin{equation}
+  P_\mathrm{RX} = \SI{1}{\milli\watt}\cdot 10^{-20/10} = \SI{e-5}{\watt} = \SI{10}{\micro\watt}.
+\end{equation}
+
+\paragraph{1. Energy of one photon.}
+A photon at frequency $f_c$ carries the energy
+\begin{equation}
+  E_\mathrm{ph} = h f_c = \SI{6.626e-34}{\joule\second}\times\SI{193.5e12}{\hertz}
+  = \SI{1.282e-19}{\joule} \;\approx\; \SI{0.80}{\electronvolt}.
+\end{equation}
+
+\paragraph{2. Average number of incident photons per second.}
+The photon flux is the optical power divided by the energy per photon:
+\begin{equation}
+  \bar N_\mathrm{ph} = \frac{P_\mathrm{RX}}{h f_c}
+  = \frac{\SI{e-5}{\watt}}{\SI{1.282e-19}{\joule}}
+  = \SI{7.80e13}{photons\per\second}.
+\end{equation}
+
+\paragraph{3. Responsivity and photocurrent.}
+Each photon generates on average $\eta_\mathrm{ph}$ electrons, so the current is
+$i = \eta_\mathrm{ph}\, q\, \bar N_\mathrm{ph} = \eta_\mathrm{ph}\, q\, P_\mathrm{RX}/(h f_c)$.
+Writing $i_\mathrm{RX} = R\, P_\mathrm{RX}$, the responsivity is
+\begin{equation}
+  R = \frac{\eta_\mathrm{ph}\, q}{h f_c}
+  = \frac{0.8\times\SI{1.602e-19}{\coulomb}}{\SI{1.282e-19}{\joule}}
+  = \SI{0.9996}{\ampere\per\watt} \;\approx\; \SI{1}{\ampere\per\watt},
+\end{equation}
+and the photocurrent is
+\begin{equation}
+  i_\mathrm{RX} = R\, P_\mathrm{RX} = \SI{0.9996}{\ampere\per\watt}\times\SI{e-5}{\watt}
+  \approx \SI{10}{\micro\ampere}.
+\end{equation}
+
+\paragraph{4. Average number of incident photons per bit.}
+The bit duration is $T_b = 1/R_b = \SI{20}{\nano\second}$, therefore
+\begin{equation}
+  \bar N_\mathrm{ph/bit} = \frac{\bar N_\mathrm{ph}}{R_b} = \frac{P_\mathrm{RX}\,T_b}{h f_c}
+  = \frac{\SI{7.80e13}{\per\second}}{\SI{50e6}{\per\second}}
+  = \num{1.56e6}\ \text{photons/bit}.
+\end{equation}
+
+\paragraph{5. Electrical SNR of the PIN receiver.}
+Assuming the receiver is limited by the TIA noise (thermal-noise-limited receiver),
+the electrical SNR is the ratio between the signal power and the noise power,
+both proportional to the square of the respective currents. The TIA noise is given directly through its
+standard deviation, which is equivalent to $\sigma_\mathrm{TIA}^2 = \mathrm{IRND}^2\cdot B_\mathrm{eq}$:
+\begin{equation}
+\begin{aligned}
+  \mathrm{SNR}^\mathrm{PIN+TIA}_\mathrm{TOT} &= \frac{i_\mathrm{RX}^2}{\sigma_\mathrm{TIA}^2}
+  = \frac{(R\,P_\mathrm{RX})^2}{\sigma_\mathrm{TIA}^2}
+  = \frac{(\SI{10}{\micro\ampere})^2}{(\SI{0.5}{\micro\ampere})^2}
+  = \frac{\SI{e-10}{\ampere\squared}}{\SI{2.5e-13}{\ampere\squared}}
+  \approx 400, \\
+  \mathrm{SNR}^\mathrm{PIN+TIA}_\mathrm{TOT,dB} &= 10\log_{10}(400) \approx \SI{26.0}{dB}.
+\end{aligned}
+\end{equation}
+\emph{Check of the assumption.} The PIN shot-noise variance over $B_\mathrm{eq}=\SI{50}{\mega\hertz}$ is
+$\sigma_\mathrm{shot}^2 = 2qi_\mathrm{RX}B_\mathrm{eq} = \SI{1.6e-16}{\ampere\squared}$,
+about $0.06\%$ of $\sigma_\mathrm{TIA}^2$: it is negligible, so the TIA-noise-only
+model is justified.
+
+\paragraph{APD receiver.}
+An APD with multiplication factor $M = 10$ and excess noise factor $F = 5$ generates the same
+primary photocurrent $i_\mathrm{RX}$, which is then multiplied by $M$.
+The useful signal current is
+\begin{equation}
+  i_\mathrm{RX}^\mathrm{APD} = R_\mathrm{APD}\, P_\mathrm{RX} = R\, M\, P_\mathrm{RX} = 10 \times \SI{10}{\micro\ampere} = \SI{100}{\micro\ampere}.
+\end{equation}
+The avalanche multiplication is itself a random process: the APD shot noise is the PIN shot noise
+amplified by $M^2$ and further increased by the excess noise factor $F$.
+Over the equivalent noise bandwidth $B_\mathrm{eq} = \SI{50}{\mega\hertz}$:
+\begin{equation}
+\begin{aligned}
+  \sigma_\mathrm{APD}^2 &= 2\, q\, M^2 F\, R\, P_\mathrm{RX}\, B_\mathrm{eq} \\
+  &= 2\times\SI{1.602e-19}{\coulomb}\times 100\times 5\times\SI{e-5}{\ampere}\times\SI{5e7}{\hertz}
+  = \SI{8.01e-14}{\ampere\squared}.
+\end{aligned}
+\end{equation}
+The TIA noise is not multiplied by the avalanche gain:
+$\sigma_\mathrm{TIA}^2 = (\SI{0.5}{\micro\ampere})^2 = \SI{2.5e-13}{\ampere\squared}$.
+Since the two contributions are independent, their variances add:
+\begin{equation}
+\begin{aligned}
+  \mathrm{SNR}^\mathrm{APD+TIA}_\mathrm{TOT}
+  &= \frac{\left(i_\mathrm{RX}^\mathrm{APD}\right)^2}{\sigma_\mathrm{TIA}^2 + \sigma_\mathrm{APD}^2}
+  = \frac{(R M P_\mathrm{RX})^2}{\sigma_\mathrm{TIA}^2 + 2 q B_\mathrm{eq} M^2 F R P_\mathrm{RX}} \\
+  &= \frac{\SI{e-8}{\ampere\squared}}{\SI{2.5e-13}{\ampere\squared}+\SI{8.01e-14}{\ampere\squared}} \\
+  &= \frac{\SI{e-8}{\ampere\squared}}{\SI{3.30e-13}{\ampere\squared}}
+  \approx \num{3.03e4}, \\
+  \mathrm{SNR}^\mathrm{APD+TIA}_\mathrm{TOT,dB} &= 10\log_{10}(\num{3.03e4}) \approx \SI{44.8}{dB}.
+\end{aligned}
+\end{equation}
+
+\paragraph{Comparison.}
+\begin{center}
+\begin{tabular}{lccc}
+  \toprule
+  Receiver & Signal current & Noise variance [\si{\ampere\squared}] & SNR \\
+  \midrule
+  PIN + TIA & \SI{10}{\micro\ampere}  & \num{2.5e-13} (TIA) & \SI{26.0}{dB} \\
+  APD + TIA & \SI{100}{\micro\ampere} & \num{2.5e-13} (TIA) $+$ \num{8.0e-14} (APD) & \SI{44.8}{dB} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+The APD improves the SNR by about \SI{18.8}{dB}. If the APD added no noise, the improvement would be
+$10\log_{10}(M^2) = \SI{20}{dB}$, because the signal power grows by $M^2$ while the TIA noise is unchanged.
+The improvement is slightly smaller because the avalanche process adds its own shot noise,
+enhanced by the factor $M^2F$, which here represents about $24\%$ of the total noise variance.
+The APD is therefore advantageous when the receiver is limited by the TIA (thermal) noise.
+
+
+% ---------------------------------------------------------------------
+\subsection{Optical splitters}
+\label{sec:2_8}
+% ---------------------------------------------------------------------
+
+\paragraph{Data.}
+Transmitted power $P_\mathrm{TX} = \SI{1}{\milli\watt} = \SI{0}{dBm}$;
+feeder fiber $L_1 = \SI{2}{\kilo\metre}$, drop fiber $L_2 = \SI{1}{\kilo\metre}$,
+attenuation $\alpha = \SI{0.2}{dB\per\kilo\metre}$;
+symmetric $1\times8$ splitter with excess loss $\varepsilon|_\mathrm{dB} = \SI{1}{dB}$.
+
+\paragraph{Splitter model.}
+A symmetric $1\times N$ splitter divides the input power equally among its $N$ outputs and
+introduces an excess loss $\varepsilon$ ($\varepsilon|_\mathrm{dB} > 0$):
+\begin{equation}
+  P_\mathrm{out} = \frac{P_\mathrm{in}}{N}\cdot\frac{1}{\varepsilon}\ \ (\text{linear scale}),
+  \qquad
+  P_\mathrm{out}\big|_\mathrm{dBm} = P_\mathrm{in}\big|_\mathrm{dBm} - 10\log_{10}(N) - \varepsilon|_\mathrm{dB}.
+\end{equation}
+The input-output attenuation of the $1\times8$ splitter is therefore
+\begin{equation}
+  \mathrm{Att}|_\mathrm{dB} = 10\log_{10}(N) + \varepsilon|_\mathrm{dB}
+  = 10\log_{10}(8) + 1 = 9.03 + 1 = \SI{10.03}{dB}.
+\end{equation}
+
+\paragraph{1. Received power without monitoring.}
+Fiber losses: $A_1 = \alpha L_1 = \SI{0.4}{dB}$ and $A_2 = \alpha L_2 = \SI{0.2}{dB}$.
+
+\emph{Logarithmic:} losses in dB add up:
+\begin{equation}
+  A_\mathrm{tot} = A_1 + \mathrm{Att}|_\mathrm{dB} + A_2 = 0.4 + 10.03 + 0.2 = \SI{10.63}{dB},
+\end{equation}
+\begin{equation}
+  P_\mathrm{RX} = P_\mathrm{TX} - A_\mathrm{tot} = \SI{0}{dBm} - \SI{10.63}{dB} = \SI{-10.63}{dBm}.
+\end{equation}
+
+\emph{Linear:} each element multiplies the power by its linear transmission factor:
+\begin{equation}
+  P_\mathrm{RX} = \SI{1}{\milli\watt}\times
+  \underbrace{10^{-0.04}}_{0.912}\times
+  \underbrace{\tfrac{1}{8}}_{0.125}\times
+  \underbrace{10^{-0.1}}_{0.794}\times
+  \underbrace{10^{-0.02}}_{0.955}
+  = \SI{0.0865}{\milli\watt} = \SI{86.5}{\micro\watt}.
+\end{equation}
+
+\paragraph{2. Power at the 10\% monitoring port.}
+The ideal $90/10$ tap is inserted after the first fiber segment, where the power is
+\begin{equation}
+  P_1 = \SI{0}{dBm} - \SI{0.4}{dB} = \SI{-0.4}{dBm} = \SI{0.912}{\milli\watt}.
+\end{equation}
+The monitoring port receives $10\%$ of this power, i.e.\ an attenuation of
+$-10\log_{10}(0.1) = \SI{10}{dB}$:
+\begin{equation}
+  P_\mathrm{mon} = 0.1\times\SI{0.912}{\milli\watt} = \SI{0.0912}{\milli\watt}
+  \quad\Leftrightarrow\quad
+  P_\mathrm{mon} = \SI{-0.4}{dBm} - \SI{10}{dB} = \SI{-10.4}{dBm}.
+\end{equation}
+
+\paragraph{3. Received power with monitoring.}
+The main branch keeps $90\%$ of the power, i.e.\ an additional attenuation of
+$-10\log_{10}(0.9) = \SI{0.46}{dB}$:
+\begin{equation}
+  A_\mathrm{tot}' = A_1 + 0.46 + \mathrm{Att}|_\mathrm{dB} + A_2 = 0.4 + 0.46 + 10.03 + 0.2 = \SI{11.09}{dB},
+\end{equation}
+\begin{equation}
+  P_\mathrm{RX}' = \SI{0}{dBm} - \SI{11.09}{dB} = \SI{-11.09}{dBm}
+  \quad\Leftrightarrow\quad
+  P_\mathrm{RX}' = 0.9\times\SI{0.0865}{\milli\watt} = \SI{0.0778}{\milli\watt}.
+\end{equation}
+
+\paragraph{Summary.}
+\begin{center}
+\begin{tabular}{lcc}
+  \toprule
+  Quantity & [dBm] & [mW] \\
+  \midrule
+  Customer power, without tap & $-10.63$ & $0.0865$ \\
+  Monitoring port (10\%)       & $-10.40$ & $0.0912$ \\
+  Customer power, with tap    & $-11.09$ & $0.0778$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+Inserting the monitoring tap costs the customer only \SI{0.46}{dB}.
+In exchange, the operator gets a monitoring signal of about \SI{-10.4}{dBm}, which is even stronger than the
+power reaching each customer, because it is extracted before the $1\times8$ split.

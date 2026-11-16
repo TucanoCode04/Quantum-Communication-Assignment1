@@ -1,0 +1,93 @@
+% =====================================================================
+%  Quantum part - Exercise 3 : Bell-state mapping in MSM
+% =====================================================================
+
+\subsection{Exercise 3 -- Bell-state mapping in MSM}
+\label{sec:q3}
+
+\paragraph{1. Resulting memory states.}
+The local memory--photon pairs and the midpoint EPPS state are
+\begin{gather}
+  \ket{\Phi^+}_{A_mA_p} = \frac{\ket{e}_{A_m}\ket{H}_{A_p} + \ket{g}_{A_m}\ket{V}_{A_p}}{\sqrt2},\qquad
+  \ket{\Phi^+}_{B_pB_m} = \frac{\ket{H}_{B_p}\ket{e}_{B_m} + \ket{V}_{B_p}\ket{g}_{B_m}}{\sqrt2},\\
+  \ket{\Psi^+}_{E_1E_2} = \frac{\ket{H}_{E_1}\ket{V}_{E_2} + \ket{V}_{E_1}\ket{H}_{E_2}}{\sqrt2},
+\end{gather}
+and the total state is
+$\ket{\psi_\mathrm{tot}} = \ket{\Phi^+}_{A_mA_p}\otimes\ket{\Psi^+}_{E_1E_2}\otimes\ket{\Phi^+}_{B_pB_m}$.
+Its expansion contains $2^3 = 8$ terms with amplitude $1/(2\sqrt2)$.
+
+Each local BSA recognises only $\Psi^\pm$, i.e.\ only the anti-correlated polarisation components
+$\ket{HV}$ and $\ket{VH}$ of the pairs $(A_p,E_1)$ and $(E_2,B_p)$.
+The terms in which a measured pair is in $\ket{HH}$ or $\ket{VV}$ are combinations of $\Phi^\pm$ and
+are discarded, since those outcomes are not recognised. Only two terms survive:
+\begin{equation}
+  \ket{\psi'_\mathrm{tot}} = \frac{1}{2\sqrt2}\Big(
+     \ket{e}_{A_m}\ket{g}_{B_m}\,\ket{HV}_{A_pE_1}\ket{HV}_{E_2B_p}
+   + \ket{g}_{A_m}\ket{e}_{B_m}\,\ket{VH}_{A_pE_1}\ket{VH}_{E_2B_p}\Big).
+\end{equation}
+Using
+$\ket{HV} = (\ket{\Psi^+}+\ket{\Psi^-})/\sqrt2$ and $\ket{VH} = (\ket{\Psi^+}-\ket{\Psi^-})/\sqrt2$:
+\begin{equation}
+\begin{aligned}
+  \ket{\psi'_\mathrm{tot}} &= \frac{1}{4\sqrt2}\Big[
+     \ket{eg}_{AB}\big(\ket{\Psi^+\Psi^+} + \ket{\Psi^+\Psi^-} + \ket{\Psi^-\Psi^+} + \ket{\Psi^-\Psi^-}\big)\\
+  &\hspace{4em} + \ket{ge}_{AB}\big(\ket{\Psi^+\Psi^+} - \ket{\Psi^+\Psi^-} - \ket{\Psi^-\Psi^+} + \ket{\Psi^-\Psi^-}\big)\Big]\\
+  &= \frac14\Big[
+     \ket{\Psi^+}_A\ket{\Psi^+}_B\,\tfrac{\ket{ge}+\ket{eg}}{\sqrt2}
+   - \ket{\Psi^+}_A\ket{\Psi^-}_B\,\tfrac{\ket{ge}-\ket{eg}}{\sqrt2}\\
+  &\hspace{2.6em}
+   - \ket{\Psi^-}_A\ket{\Psi^+}_B\,\tfrac{\ket{ge}-\ket{eg}}{\sqrt2}
+   + \ket{\Psi^-}_A\ket{\Psi^-}_B\,\tfrac{\ket{ge}+\ket{eg}}{\sqrt2}\Big],
+\end{aligned}
+\end{equation}
+where $\ket{\Psi^\pm}_A$ and $\ket{\Psi^\pm}_B$ denote the outcomes of BSA$(A_p,E_1)$ and BSA$(E_2,B_p)$, and the
+memory kets are ordered as $\ket{\cdot}_A\ket{\cdot}_B$.
+Using the same memory Bell states as in the lecture notes,
+\begin{equation}
+  \ket{\Psi^\pm}_{AB} = \frac{\ket{ge}\pm\ket{eg}}{\sqrt2},
+\end{equation}
+and accepting all four recognised outcome combinations, each with ideal probability $|1/4|^2 = 1/16$:
+\begin{center}
+\begin{tabular}{ccc}
+  \toprule
+  BSA outcome at A & BSA outcome at B & Memory state, up to global phase \\
+  \midrule
+  $\Psi^+$ & $\Psi^+$ & $\ket{\Psi^+}_{AB}$ \\
+  $\Psi^+$ & $\Psi^-$ & $\ket{\Psi^-}_{AB}$ \\
+  $\Psi^-$ & $\Psi^+$ & $\ket{\Psi^-}_{AB}$ \\
+  $\Psi^-$ & $\Psi^-$ & $\ket{\Psi^+}_{AB}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+Compared with the $\Phi^+$ EPPS case from class, the memories end up in $\Psi^\pm$ instead of $\Phi^\pm$.
+This is because $\ket{\Psi^+}_{E_1E_2} = (\hat I\otimes\hat X)\ket{\Phi^+}_{E_1E_2}$: the bit flip
+introduced by the source propagates to the final memory state.
+
+\paragraph{2. Pauli correction.}
+We choose (arbitrarily) $\ket{\Psi^+}_{AB}$ as the target Bell state, with the convention
+$\hat Z\ket{e} = \ket{e}$, $\hat Z\ket{g} = -\ket{g}$.
+\begin{itemize}
+  \item Outcomes $(\Psi^+,\Psi^+)$ and $(\Psi^-,\Psi^-)$: the memories are already in $\ket{\Psi^+}_{AB}$,
+        so no correction is needed and we apply $\hat I_A\otimes\hat I_B$.
+  \item Outcomes $(\Psi^+,\Psi^-)$ and $(\Psi^-,\Psi^+)$: the memories are in $\ket{\Psi^-}_{AB}$, and a
+        local Pauli $\hat Z$ correction must be applied to one memory:
+        \begin{equation}
+          (\hat I_A\otimes\hat Z_B)\ket{\Psi^-}_{AB}
+          = \frac{\ket{g}_A\hat Z\ket{e}_B - \ket{e}_A\hat Z\ket{g}_B}{\sqrt2}
+          = \frac{\ket{g}_A\ket{e}_B + \ket{e}_A\ket{g}_B}{\sqrt2} = \ket{\Psi^+}_{AB}.
+        \end{equation}
+        Equivalently, $(\hat Z_A\otimes\hat I_B)\ket{\Psi^-}_{AB} = -\ket{\Psi^+}_{AB}$, which equals
+        $\ket{\Psi^+}_{AB}$ up to an irrelevant global phase.
+\end{itemize}
+
+\paragraph{3. Intrinsic BSA success probability.}
+No: changing the EPPS state from $\Phi^+$ to $\Psi^+$ does not modify the intrinsic success probability
+of the two local BSAs. The two Bell states are related by a local unitary on one photon
+($\hat X$ on $E_2$), which preserves the moduli of the probability amplitudes; it only changes
+\emph{which} memory state is associated with each outcome.
+Indeed, from $\ket{\psi'_\mathrm{tot}}$ each of the four recognised outcome pairs has amplitude $1/4$, so
+\begin{equation}
+  P_\mathrm{succ} = 4\times\left|\tfrac14\right|^2 = \tfrac14 = 25\%
+  = \underbrace{\tfrac12}_{\text{BSA at A}}\times\underbrace{\tfrac12}_{\text{BSA at B}},
+\end{equation}
+exactly as in the $\Phi^+$ case: each linear-optics BSA still succeeds with probability $1/2$.

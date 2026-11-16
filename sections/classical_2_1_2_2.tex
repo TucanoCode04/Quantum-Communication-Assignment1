@@ -1,0 +1,116 @@
+% =====================================================================
+%  Sections 2.1 - 2.2 : modulations, spectral efficiency, frequencies
+% =====================================================================
+
+% ---------------------------------------------------------------------
+\subsection{Modulations and spectral efficiency}
+\label{sec:2_1}
+% ---------------------------------------------------------------------
+\paragraph{Data.} $R_b = \SI{30}{\giga\bit\per\second}$, square pulses, WDM grid of \SI{12.5}{\giga\hertz}.
+
+\paragraph{1. Baseband spectral occupancy.}
+A modulation format with $M$ symbols carries $n_\mathrm{bit} = \log_2 M$ bits per symbol, so the baud rate
+(number of symbols per second) is $D = 1/T_s = R_b/n_\mathrm{bit}$. With rectangular (square) pulses of duration
+$T_s$ the PSD is a $\mathrm{sinc}^2$; defining the occupied bandwidth as the first null of the PSD, the baseband
+occupancy (on the positive frequency axis) is
+\begin{equation}
+  B \simeq \frac{1}{T_s} = D = \frac{R_b}{n_\mathrm{bit}} .
+\end{equation}
+(This is twice the theoretical minimum $B_\mathrm{min} = D/2$ obtained with Nyquist sinc-like pulses.)
+\begin{itemize}
+  \item \textbf{PAM-2} ($n_\mathrm{bit}=1$): $B = \SI{30}{\giga\bit\per\second}/1 = \SI{30}{\giga\hertz}$.
+  \item \textbf{PAM-4} ($n_\mathrm{bit}=2$): $B = 30/2 = \SI{15}{\giga\hertz}$, i.e.\ equal to the baud rate
+        $D = R_b/2$.
+  \item \textbf{QPSK}: with QAM it is possible to encode two baseband digital transmission signals on the
+        same quasi-sinusoidal carrier, using the in-phase (I) and quadrature (Q) components.
+        QPSK can be described as two PAM-2 signals in quadrature, each carrying \SI{15}{\giga\bit\per\second},
+        so $B = \SI{15}{\giga\hertz}$, the same as PAM-4.
+  \item \textbf{16-QAM}: it exploits a PAM-4 on each quadrature. Each branch therefore has the same structure as
+        a PAM-4 signal, but carries only half of the bits (\SI{15}{\giga\bit\per\second}), so
+        $B = \SI{15}{\giga\hertz}/2 = \SI{7.5}{\giga\hertz}$.
+\end{itemize}
+\begin{center}
+\begin{tabular}{lcccc}
+  \toprule
+  Format & $n_\mathrm{bit}$ & $D$ [GBd] & $B$ (baseband) & Spectral efficiency $R_b/D$ \\
+  \midrule
+  PAM-2  & 1 & 30  & \SI{30}{\giga\hertz}  & \SI{1}{bit/s/Hz} \\
+  PAM-4  & 2 & 15  & \SI{15}{\giga\hertz}  & \SI{2}{bit/s/Hz} \\
+  QPSK   & 2 & 15  & \SI{15}{\giga\hertz}  & \SI{2}{bit/s/Hz} \\
+  16-QAM & 4 & 7.5 & \SI{7.5}{\giga\hertz} & \SI{4}{bit/s/Hz} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+PAM-4 and QPSK have the same occupancy because they carry the same number of bits per symbol; the advantage
+of QPSK is the larger distance between constellation points (better noise tolerance), not the bandwidth.
+Increasing the number of bits per symbol reduces the occupancy, at the cost of a higher required SNR.
+
+\paragraph{2. WDM slots.}
+Once the real baseband signal of bandwidth $B$ modulates the optical carrier, the resulting bandpass signal
+occupies $2B$ around $f_0$: with square pulses the main lobe extends from $f_0 - D$ to $f_0 + D$, so the occupied
+optical bandwidth is $B_\mathrm{opt} = 2D$. The number of adjacent \SI{12.5}{\giga\hertz} slots is
+$N = \lceil B_\mathrm{opt}/\SI{12.5}{\giga\hertz}\rceil$, and the allocated bandwidth is $N\times\SI{12.5}{\giga\hertz}$:
+\begin{center}
+\begin{tabular}{lcccc}
+  \toprule
+  Format & $B_\mathrm{opt} = 2D$ & $B_\mathrm{opt}/\SI{12.5}{\giga\hertz}$ & Slots $N$ & Allocated bandwidth \\
+  \midrule
+  PAM-2  & \SI{60}{\giga\hertz} & 4.8 & 5 & \SI{62.5}{\giga\hertz} \\
+  PAM-4  & \SI{30}{\giga\hertz} & 2.4 & 3 & \SI{37.5}{\giga\hertz} \\
+  QPSK   & \SI{30}{\giga\hertz} & 2.4 & 3 & \SI{37.5}{\giga\hertz} \\
+  16-QAM & \SI{15}{\giga\hertz} & 1.2 & 2 & \SI{25}{\giga\hertz} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+Because the slots must be allocated as whole units, part of the allocated spectrum is unused
+(e.g.\ \SI{2.5}{\giga\hertz} for PAM-2, \SI{10}{\giga\hertz} for 16-QAM).
+
+
+% ---------------------------------------------------------------------
+\subsection{Frequencies and wavelengths}
+\label{sec:2_2}
+% ---------------------------------------------------------------------
+\paragraph{Central frequencies.}
+Using $f = c/\lambda$ with $c = \SI{3e8}{\metre\per\second}$ and the central wavelength of each band:
+\begin{align}
+  \text{C-band (1530--1565 nm):}\quad & \lambda_0 = \SI{1547.5}{\nano\metre}
+  \;\Rightarrow\; f_0 = \frac{c}{\lambda_0} = \SI{193.86}{\tera\hertz},\\
+  \text{L-band (1565--1625 nm):}\quad & \lambda_0 = \SI{1595}{\nano\metre}
+  \;\Rightarrow\; f_0 = \frac{c}{\lambda_0} = \SI{188.09}{\tera\hertz}.
+\end{align}
+(Averaging the frequencies of the band edges instead gives \SI{193.89}{\tera\hertz} and \SI{188.15}{\tera\hertz},
+practically the same values.)
+
+\paragraph{Spectral occupancy of the \SI{200}{\giga\bit\per\second} signal.}
+As in Section~\ref{sec:2_1}, we assume square pulses, so the optical occupancy is
+$B_\mathrm{opt} = 2D = 2R_b/n_\mathrm{bit}$, where the factor 2 accounts for the modulation onto the carrier
+(both sides of the main lobe around $f_0$):
+\begin{align}
+  \text{QPSK } (n_\mathrm{bit}=2):\quad & B_\mathrm{opt} = \frac{2\times\SI{200}{\giga\bit\per\second}}{2} = \SI{200}{\giga\hertz}
+  \;\Rightarrow\; N = \frac{200}{12.5} = 16 \text{ slots},\\
+  \text{16-QAM } (n_\mathrm{bit}=4):\quad & B_\mathrm{opt} = \frac{2\times\SI{200}{\giga\bit\per\second}}{4} = \SI{100}{\giga\hertz}
+  \;\Rightarrow\; N = \frac{100}{12.5} = 8 \text{ slots},
+\end{align}
+where 16-QAM can be seen as a PAM-4 on each quadrature.
+With ideal minimum-bandwidth (Nyquist) pulses, the bandpass occupancy would instead be $B_\mathrm{min} = D$, i.e.\
+\SI{100}{\giga\hertz} (8 slots) for QPSK and \SI{50}{\giga\hertz} (4 slots) for 16-QAM; in practice the actual
+occupancy lies between these two cases.
+
+\paragraph{Width of the contiguous slots in nanometers.}
+Differentiating $\lambda = c/f$ gives $|\Delta\lambda| = \lambda^2\Delta f/c$. Evaluating it at the centre of each band:
+\begin{align}
+  \Delta\lambda_\mathrm{slot}^{C} &= \frac{(\SI{1547.5}{\nano\metre})^2\times\SI{12.5}{\giga\hertz}}{c} = \SI{0.0998}{\nano\metre},\\
+  \Delta\lambda_\mathrm{slot}^{L} &= \frac{(\SI{1595}{\nano\metre})^2\times\SI{12.5}{\giga\hertz}}{c} = \SI{0.1060}{\nano\metre}.
+\end{align}
+\begin{center}
+\begin{tabular}{lccc}
+  \toprule
+  Signal & Allocated bandwidth & C-band (\SI{1547.5}{\nano\metre}) & L-band (\SI{1595}{\nano\metre}) \\
+  \midrule
+  QPSK, 16 slots   & \SI{200}{\giga\hertz} & \SI{1.60}{\nano\metre} & \SI{1.70}{\nano\metre} \\
+  16-QAM, 8 slots  & \SI{100}{\giga\hertz} & \SI{0.80}{\nano\metre} & \SI{0.85}{\nano\metre} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+Since $\Delta\lambda\propto\lambda^2$, the same bandwidth in GHz occupies about $6\%$ more nanometers in the
+L-band than in the C-band.
